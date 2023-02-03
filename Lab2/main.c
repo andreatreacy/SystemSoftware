@@ -1,5 +1,9 @@
 #include <stdio.h>
-#include<math.h>
+#include <math.h>
+#include "areaOfRectangle.h"
+#include "areaOfCircle.h"
+#include "areaOfSquare.h"
+#include "area_of_triangle.h"
 
 
 int main( int argc, char *argv[] )  {
