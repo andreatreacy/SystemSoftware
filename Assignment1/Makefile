@@ -1,9 +1,9 @@
 
-build: go.c primes.c
-	gcc -o go go.c primes.c
+build: createReport.c
+	gcc -o createReport createReport.c
 
-run:
-	./go 3
+run: createReport.o
+	./createReport
 
 clean:
 	rm go
