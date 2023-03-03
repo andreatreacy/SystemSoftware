@@ -31,7 +31,7 @@ int main()
 
     // format the struct tm value as a string
     char datetime_str[20];
-    strftime(datetime_str, sizeof(datetime_str), "%Y-%m-%d-%H:%M:%S", t);
+    strftime(datetime_str, sizeof(datetime_str), "%Y-%m-%d %H-%M-%S", t);
 
     // Get the current username
     char *username = getenv("USER");
