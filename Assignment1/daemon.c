@@ -79,7 +79,19 @@ int main()
 
           // Log file goes here
           // TODO create your logging functionality here to a file
+          FILE *fptr;
 
+          // Open the file in "append" mode
+          fptr = fopen("logs.txt", "a");
+
+          // if log file was not opened exit
+          if (fptr == NULL) 
+          {
+             printf("Error opening file.\n");
+             exit(EXIT_FAILURE);
+             //return 1;
+          }
+         
 
           // Orphan Logic goes here!! 
           // Keep process running with infinite loop
