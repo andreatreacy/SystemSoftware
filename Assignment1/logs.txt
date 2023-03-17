@@ -1,1 +1,4 @@
 This is some text to add to the file.
+All contents of 'dashboardDirectory' copied to 'backupDirectory'.
+Daemon running.
+Daemon running.

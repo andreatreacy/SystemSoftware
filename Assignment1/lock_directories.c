@@ -18,7 +18,3 @@ void lock_directories() {
     }  
 }
 
-int main ()
-{
-    lock_directories();
-}

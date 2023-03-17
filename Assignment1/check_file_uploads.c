@@ -72,7 +72,3 @@ void check_file_uploads(void) {
     }
 
 }
-
-int main() {
-   check_file_uploads();
-}

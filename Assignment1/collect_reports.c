@@ -3,6 +3,7 @@
 #include <sys/types.h>
 #include <sys/wait.h>
 #include <syslog.h>
+#include <stdlib.h>
 
 
 void collect_reports(void) {
@@ -48,7 +49,3 @@ void collect_reports(void) {
 }
 
 
-int main ()
-{
-    collect_reports();
-}

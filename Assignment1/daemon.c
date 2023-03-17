@@ -23,11 +23,34 @@
 #include <syslog.h>
 #include <sys/stat.h>
 #include <time.h>
-#include "daemon_task.h"
+//#include "daemon_task.h"
+#include "backup_dashboard.h"
+#include "check_file_uploads.h"
+#include "collect_reports.h"
+#include "lock_directories.h"
+#include "sig_handler.h"
+#include "unlock_directories.h"
+#include "update_timer.h"
 #include <signal.h>
 
 int main()
 {
+   FILE *fptr;
+
+          // Open the file in "append" mode
+          fptr = fopen("logs.txt", "a");
+
+          // if log file was not opened exit
+          if (fptr == NULL) 
+          {
+             printf("Error opening file.\n");
+             fprintf(fptr, "ERROR.\n");
+             exit(EXIT_FAILURE);
+             //return 1;
+          }
+         
+            printf("daemon running.\n");
+            fprintf(fptr, "Daemon running.\n");
     time_t now;
     struct tm backup_time;
     time(&now);  /* get current time; same as: now = time(NULL)  */
@@ -79,19 +102,7 @@ int main()
 
           // Log file goes here
           // TODO create your logging functionality here to a file
-          FILE *fptr;
-
-          // Open the file in "append" mode
-          fptr = fopen("logs.txt", "a");
-
-          // if log file was not opened exit
-          if (fptr == NULL) 
-          {
-             printf("Error opening file.\n");
-             exit(EXIT_FAILURE);
-             //return 1;
-          }
-         
+          
 
           // Orphan Logic goes here!! 
           // Keep process running with infinite loop
@@ -135,7 +146,7 @@ int main()
 			backup_dashboard();
 			sleep(30);
 			unlock_directories();
-			generate_reports();
+			//generate_reports();
 			//after actions are finished, start counting to next day
 			update_timer(&backup_time);
 		}	

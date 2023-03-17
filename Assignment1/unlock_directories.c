@@ -21,8 +21,5 @@ void unlock_directories() {
     }
 }
 
-int main ()
-{
-    unlock_directories();
-}
+
         
