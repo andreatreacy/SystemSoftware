@@ -71,11 +71,13 @@ int main()
         exit(EXIT_SUCCESS);
     } else if (pid == 0) {
        // Step 1: Create the orphan process
-       
+       printf("step 1.\n");
+      fprintf(fptr, "step 1.\n");
        // Step 2: Elevate the orphan process to session leader, to loose controlling TTY
        // This command runs the process in a new session
        if (setsid() < 0) { exit(EXIT_FAILURE); }
-
+      printf("step 2.\n");
+      fprintf(fptr, "step 2.\n");
        // We could fork here again , just to guarantee that the process is not a session leader
        int pid = fork();
        if (pid > 0) {
@@ -84,19 +86,28 @@ int main()
        
           // Step 3: call umask() to set the file mode creation mask to 0
           umask(0);
-
+         printf("step 3.\n");
+         fprintf(fptr, "step 3.\n");
           // Step 4: Change the current working dir to root.
           // This will eliminate any issues of running on a mounted drive, 
           // that potentially could be removed etc..
           if (chdir("/") < 0 ) { exit(EXIT_FAILURE); }
-
+            printf("step 4.\n");
+         fprintf(fptr, "step 4.\n");
           // Step 5: Close all open file descriptors
-          /* Close all open file descriptors */
+          /* Close all open file descriptors*/
           int x;
           for (x = sysconf(_SC_OPEN_MAX); x>=0; x--)
           {
-             close (x);
-          } 
+            // extra code added so that if there is an error the loop is exited instead of it getting stuck
+            if (close(x) == -1) {
+               // handle error here
+               break; // exit the loop if there was an error
+            }
+             //close (x);
+          }  
+          printf("step 5.\n");
+         fprintf(fptr, "step 5.\n");
 
           // Signal Handler goes here
 
@@ -118,6 +129,8 @@ int main()
 	
   	  while(1) {
 	  	sleep(1);
+
+      printf("in while.\n");
 
 		if(signal(SIGINT, sig_handler) == SIG_ERR) {
 			syslog(LOG_ERR, "ERROR: daemon.c : SIG_ERR RECEIVED");
