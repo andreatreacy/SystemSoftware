@@ -16,7 +16,7 @@ void collect_reports(void) {
     fptr = fopen("logs.txt", "a");
 
     if (fptr == NULL) {
-        printf("Error opening file.\n");
+        printf("Error opening log file.\n");
         return 1;
     }
 

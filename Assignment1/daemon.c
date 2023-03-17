@@ -33,12 +33,14 @@
 #include "update_timer.h"
 #include <signal.h>
 
+
 int main()
 {
+   /*
    FILE *fptr;
 
           // Open the file in "append" mode
-          fptr = fopen("logs.txt", "a");
+          fptr = fopen("daemon_log.txt", "a");
 
           // if log file was not opened exit
           if (fptr == NULL) 
@@ -47,17 +49,17 @@ int main()
              fprintf(fptr, "ERROR.\n");
              exit(EXIT_FAILURE);
              //return 1;
-          }
+          }*/
          
             printf("daemon running.\n");
-            fprintf(fptr, "Daemon running.\n");
+            //fprintf(fptr, "Daemon running.\n");
     time_t now;
     struct tm backup_time;
     time(&now);  /* get current time; same as: now = time(NULL)  */
     backup_time = *localtime(&now);
-    backup_time.tm_hour = 1; 
-    backup_time.tm_min = 0; 
-    backup_time.tm_sec = 0;
+    backup_time.tm_hour = 2; 
+    backup_time.tm_min = 18; //0 
+    backup_time.tm_sec = 0; //0
 
     // Implementation for Singleton Pattern if desired (Only one instance running)
 
@@ -72,12 +74,12 @@ int main()
     } else if (pid == 0) {
        // Step 1: Create the orphan process
        printf("step 1.\n");
-      fprintf(fptr, "step 1.\n");
+      //fprintf(fptr, "step 1.\n");
        // Step 2: Elevate the orphan process to session leader, to loose controlling TTY
        // This command runs the process in a new session
        if (setsid() < 0) { exit(EXIT_FAILURE); }
       printf("step 2.\n");
-      fprintf(fptr, "step 2.\n");
+      //fprintf(fptr, "step 2.\n");
        // We could fork here again , just to guarantee that the process is not a session leader
        int pid = fork();
        if (pid > 0) {
@@ -87,13 +89,13 @@ int main()
           // Step 3: call umask() to set the file mode creation mask to 0
           umask(0);
          printf("step 3.\n");
-         fprintf(fptr, "step 3.\n");
+         //fprintf(fptr, "step 3.\n");
           // Step 4: Change the current working dir to root.
           // This will eliminate any issues of running on a mounted drive, 
           // that potentially could be removed etc..
           if (chdir("/") < 0 ) { exit(EXIT_FAILURE); }
             printf("step 4.\n");
-         fprintf(fptr, "step 4.\n");
+         //fprintf(fptr, "step 4.\n");
           // Step 5: Close all open file descriptors
           /* Close all open file descriptors*/
           int x;
@@ -107,7 +109,7 @@ int main()
              //close (x);
           }  
           printf("step 5.\n");
-         fprintf(fptr, "step 5.\n");
+         //fprintf(fptr, "step 5.\n");
 
           // Signal Handler goes here
 
@@ -126,11 +128,12 @@ int main()
 	  check_uploads_time.tm_hour = 23; 
 	  check_uploads_time.tm_min = 30; 
 	  check_uploads_time.tm_sec = 0;
+
+     //fclose(fptr);
 	
   	  while(1) {
 	  	sleep(1);
-
-      printf("in while.\n");
+      //printf("in while.\n");
 
 		if(signal(SIGINT, sig_handler) == SIG_ERR) {
 			syslog(LOG_ERR, "ERROR: daemon.c : SIG_ERR RECEIVED");
@@ -152,6 +155,7 @@ int main()
 		//countdown to 1:00
 		time(&now);
 		double seconds_to_transfer = difftime(now, mktime(&backup_time));
+      printf("%.2f",seconds_to_transfer);
 		//syslog(LOG_INFO, "%.f seconds until backup", seconds_to_files_check);
 		if(seconds_to_transfer == 0) {
 			lock_directories();
