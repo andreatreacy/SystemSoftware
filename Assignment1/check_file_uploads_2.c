@@ -17,7 +17,6 @@ void check_file_uploads(void) {
     char *distribution_file = NULL;
     char *files[4];
     char *missing_files[4] = { "Sales", "Warehouse", "Manufacturing", "Distribution" };
-    int i, j;
 
     // get the current time as the number of seconds elapsed since the UNIX epoch (January 1, 1970, 00:00:00 UTC)
     time_t time_now = time(NULL);
@@ -91,7 +90,7 @@ void check_file_uploads(void) {
     else 
     {
         fprintf(fptr, "ERROR. The following reports are missing:\n");
-        for (i = 0; i < 4; i++) {
+        for (int i = 0; i < 4; i++) {
             if (missing_files[i] != NULL) 
             {
                 fprintf(fptr, "- %s\n", missing_files[i]);

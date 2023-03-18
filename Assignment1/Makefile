@@ -1,11 +1,10 @@
 CC=gcc
-CFLAGS=-Wall -Wextra -std=c99 -pedantic
-LIBS=-lpthread
-
-all: daemon
 
 daemon: daemon.c backup_dashboard.c check_file_uploads.c collect_reports.c lock_directories.c sig_handler.c unlock_directories.c update_timer.c
-	$(CC) $(CFLAGS) -o daemon daemon.c backup_dashboard.c check_file_uploads.c collect_reports.c lock_directories.c sig_handler.c unlock_directories.c update_timer.c $(LIBS)
+	$(CC) -o daemon daemon.c backup_dashboard.c check_file_uploads.c collect_reports.c lock_directories.c sig_handler.c unlock_directories.c update_timer.c
+
+run-daemon:
+	./daemon
 
 backup: backup_dashboard_2.c
 	$(CC) -o backup_dashboard_2 backup_dashboard_2.c
@@ -13,8 +12,8 @@ backup: backup_dashboard_2.c
 run-backup:
 	./backup_dashboard_2
 
-reports: generate_reports.c
-	$(CC) -o generate_reports generate_reports.c
+reports: generate_reports_2.c
+	$(CC) -o generate_reports_2 generate_reports_2.c
 
 run-reports:
 	./generate_reports
