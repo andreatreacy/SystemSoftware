@@ -14,5 +14,4 @@ void sig_handler(int sigNum)
 		sleep(30);
 		unlock_directories();	
 	}
-
 }

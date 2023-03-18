@@ -1,0 +1,39 @@
+__________________check_file_uploads____________________
+SUCCESS. Warehouse report is present.
+___________________________________________
+
+__________________check_file_uploads____________________
+SUCCESS. Warehouse report is present.
+ERROR. The following reports are missing:
+- Sales
+- Manufacturing
+- Distribution
+___________________________________________
+
+__________________collect_reports____________________
+All contents of shareDirectory moved to dashboardDirectory.
+___________________________________________
+
+__________________backup_dashboard____________________
+SUCCESS. All contents of dashboardDirectory copied to backupDirectory.
+___________________________________________
+
+__________________lock_directories____________________
+SUCCESS. shareDirectory locked'.
+SUCCESS. dashboardDirectory locked'.
+SUCCESS. backupDirectory locked'.
+__________________lock_directories____________________
+___________________________________________
+
+__________________generate_reports____________________
+ERROR. File could not be created.
+__________________unlock_directories____________________
+SUCCESS. shareDirectory unlocked'.
+SUCCESS. dashboardDirectory unlocked'.
+SUCCESS. backupDirectory unlocked'.
+__________________unlock_directories____________________
+___________________________________________
+
+__________________generate_reports____________________
+SUCCESS. Sales Report created successfully
+___________________________________________

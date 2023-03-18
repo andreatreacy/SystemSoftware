@@ -15,10 +15,11 @@ void lock_directories() {
     int status;
     FILE *fptr;
     fptr = fopen("logs.txt", "a");
-        if (fptr == NULL) {
-            printf("Error opening logs file.\n");
-            return;
-        }
+    if (fptr == NULL) {
+        printf("Error opening logs file.\n");
+        return;
+    }
+    fprintf(fptr, "__________________lock_directories____________________\n");
 
     pid = fork();
     if (pid == -1) {
@@ -32,6 +33,10 @@ void lock_directories() {
         {
             printf("Error: Failed to lock shareDirectory.\n");
         } 
+        else
+        {
+            fprintf(fptr, "SUCCESS. shareDirectory locked'.\n");
+        }
 
         char* directory_path2 = "dashboardDirectory";
         int result2 = chmod(directory_path2, S_IRUSR | S_IXUSR | S_IRGRP | S_IXGRP | S_IROTH | S_IXOTH);
@@ -39,6 +44,10 @@ void lock_directories() {
         {
             printf("Error: Failed to lock dashboardDirectory.\n");
         } 
+        else
+        {
+            fprintf(fptr, "SUCCESS. dashboardDirectory locked'.\n");
+        }
 
         char* directory_path3 = "backupDirectory";
         int result3 = chmod(directory_path3, S_IRUSR | S_IXUSR | S_IRGRP | S_IXGRP | S_IROTH | S_IXOTH);
@@ -46,6 +55,10 @@ void lock_directories() {
         {
             printf("Error: Failed to lock backupDirectory.\n");
         } 
+        else
+        {
+            fprintf(fptr, "SUCCESS. backupDirectory locked'.\n");
+        }
         exit(1);
     }
     else { // parent process
@@ -58,8 +71,8 @@ void lock_directories() {
             printf("ERROR. Failed to lock directories'.\n");
             fprintf(fptr, "ERROR. Failed to lock directories'.\n");
         }
-
-        fclose(fptr);
     }
+    fprintf(fptr, "___________________________________________\n");
+    fclose(fptr);
 }
 
