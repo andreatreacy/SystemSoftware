@@ -16,7 +16,7 @@ reports: generate_reports_2.c
 	$(CC) -o generate_reports_2 generate_reports_2.c
 
 run-reports:
-	./generate_reports
+	./generate_reports_2
 
 lock: lock_directories_2.c
 	$(CC) -o lock_directories_2 lock_directories_2.c

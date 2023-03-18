@@ -14,7 +14,7 @@
 
 // Orphan Example
 // The child process is adopted by init process, when parent process dies.
-#include<stdio.h>
+#include <stdio.h>
 #include <sys/types.h>
 #include <unistd.h>
 #include <signal.h>
