@@ -49,10 +49,10 @@ int main(int argc , char *argv[])
     }
     printf("Logged in as: %s\n", username);
 
-    printf("Enter message 1: ");
+    printf("Enter the name of the file to be transferred: ");
     scanf("%s", fileMessage);
 
-    printf("Enter message 2: ");
+    printf("Enter the name of the folder to transfer it to: ");
     scanf("%s", pathMessage);
 
     // Merge the messages with a hyphen
@@ -61,36 +61,30 @@ int main(int argc , char *argv[])
     snprintf(fullMessage, sizeof(fullMessage), "%s-%s", mergedMessage, username);
     printf("full message: %s\n", fullMessage);
      
+    //Send some data
+    if(send(SID , fullMessage , strlen(fullMessage) , 0) < 0)
+    {
+        printf("Send failed");
+        return 1;
+    }
+
     //keep communicating with server
     int end = 0;
-    //while(end == 0)
-    //{
-        //printf("\nEnter message : ");
-        //scanf("%s" , clientMessage);
-         
-        //Send some data
-        if(send(SID , fullMessage , strlen(fullMessage) , 0) < 0)
-        {
-            printf("Send failed");
-            return 1;
-        }
-         
+    while(end == 0)
+    {  
         //Receive a reply from the server
-        if( recv(SID , serverMessage , 500 , 0) < 0)
+        if(recv(SID , serverMessage , 500 , 0) < 0)
         {
             printf("IO error");
             //break;
         }
-         
-        puts("\nServer sent: ");
-        puts(serverMessage);
-
-        if(serverMessage == "File Transferred Successfully")
+        else
         {
+            puts("\nServer sent: ");
+            puts(serverMessage);
             end = 1;
-        }
-
-    //}
+        }  
+    }
      
     close(SID);
     return 0;
