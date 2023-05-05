@@ -190,42 +190,6 @@ void *connection_handler(void *socket_desc)
                 // if the user is a member of the user group
                 if(isMember == 1)
                 {
-                    /*
-                    // Retrieve the user ID (UID) based on the username in message_parts[2]
-                    struct passwd *user_info = getpwnam(message_parts[2]);
-                    if (user_info == NULL) {
-                        printf("Failed to retrieve user information.\n");
-                        return 1;
-                    }
-                    uid_t user_id = user_info->pw_uid;
-
-                    // Set the owner of the file to the user's UID
-                    if (chown(message_parts[0], user_id, -1) == -1) {
-                        perror("Failed to change file ownership");
-                        return 1;
-                    }*/
-
-                    /*
-                    printf("in ismember.\n");
-                    // Retrieve the group ID (GID) based on the username
-                    struct passwd *user_info = getpwnam(message_parts[2]);
-                    if (user_info == NULL) {
-                        printf("Failed to retrieve user information.\n");
-                        return 1;
-                    }
-                    printf("getting group id.\n");
-                    gid_t group_id = user_info->pw_gid;
-
-                    // Set the group ownership of the file "t.txt" to the user's group ID
-                    if (chown(message_parts[0], -1, group_id) == -1) {
-                        perror("Failed to change file ownership");
-                        return 1;
-                    }
-
-                    printf("File ownership changed successfully.\n");
-                    */
-                    
-
                     // Create a command that moves the file
                     char command[256];
                     snprintf(command, sizeof(command), "mv %s %s", message_parts[0], "distribution");
