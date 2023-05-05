@@ -32,11 +32,11 @@ int main(int argc , char *argv[])
     s = socket(AF_INET , SOCK_STREAM , 0);
     if (s == -1)
     {
-        printf("Could not create socket");
+        printf("Could not create socket\n");
     } 
     else 
     {
-    	printf("Socket Successfully Created!!");
+    	printf("Socket Successfully Created!!\n");
     } 
 
     // set sockaddr_in variables
@@ -49,16 +49,17 @@ int main(int argc , char *argv[])
     //Bind
     if( bind(s,(struct sockaddr *)&server , sizeof(server)) < 0)
     {
-        perror("Bind issue!!");
+        perror("Bind issue!!\n");
         return 1;
     } else {
-    	printf("Bind Complete!!");
+    	printf("Bind Complete!!\n");
     }
      
     //Listen for a conection
     listen(s,3); 
+
     //Accept and incoming connection
-    printf("Waiting for incoming connection from Client>>");
+    printf("Waiting for incoming connection from Client>>\n");
     connSize = sizeof(struct sockaddr_in);
      
     // Accept and handle incoming connections
@@ -71,17 +72,17 @@ int main(int argc , char *argv[])
         *new_sock = cs;
         if (pthread_create(&thread_id, NULL, connection_handler, (void *)new_sock) < 0)
         {
-            perror("could not create thread");
+            perror("could not create thread\n");
             return 1;
         }
 
-        // Detach the thread to allow it to run independently
+        // detach the thread to allow it to run independently
         pthread_detach(thread_id);
     }
-	
+	// if connection failed
 	if (cs < 0)
     {
-        perror("Can't establish connection");
+        perror("Can't establish connection\n");
         return 1;
     }
      
@@ -90,7 +91,7 @@ int main(int argc , char *argv[])
 
 
 
-// Function to handle client connection
+// function to handle client connection
 void *connection_handler(void *socket_desc)
 {
     // use the mutex lock
@@ -127,12 +128,14 @@ void *connection_handler(void *socket_desc)
             printf("message_parts %d: %s\n", j + 1, message_parts[j]);
         }
 
+        // check if the folder to be transferred to is distribution
         if(strcmp(message_parts[1], "distribution") == 0)
         {
             // Check if the file to be moved exists
             if (access(message_parts[0], F_OK) == -1) 
             {
-                perror("File does not exist");
+                perror("File does not exist\n");
+                // send the error message to the client
                 char response[100];
                 int length;
                 length = snprintf(response, sizeof(response), "%s does not exist", message_parts[0]);
@@ -140,11 +143,12 @@ void *connection_handler(void *socket_desc)
             }
             else
             {
-                // Get the group entry using group name
+                // Get the user group using group name
                 struct group* group = getgrnam("distribution");
 
                 int isMember = 0;
                 
+                // check that the user group exists
                 if(group != NULL) 
                 {
                     // Iterate over group members and check if the username matches
@@ -161,24 +165,29 @@ void *connection_handler(void *socket_desc)
                         member++;
                     }
                     
+                    // if the user is not a member of the group
                     if (*member == NULL) 
                     {
                         printf("%s is not a member of the distribution group.\n", message_parts[2]);
+                        // send the error message to the client
                         char response[100];
                         int length;
                         length = snprintf(response, sizeof(response), "%s is not a member of the manufacturing group.\n", message_parts[2]);
                         write(cs, response, length);
                     }
                 } 
+                // if the group does not exist
                 else 
                 {
                     printf("Group distribution not found.\n");
+                    // send the error message to the client
                     char response[100];
                     int length;
                     length = snprintf(response, sizeof(response), "Group distribution not found\n");
                     write(cs, response, length);
                 }
 
+                // if the user is a member of the user group
                 if(isMember == 1)
                 {
                     /*
@@ -190,7 +199,7 @@ void *connection_handler(void *socket_desc)
                     }
                     uid_t user_id = user_info->pw_uid;
 
-                    // Set the owner of the file "t.txt" to the user's UID
+                    // Set the owner of the file to the user's UID
                     if (chown(message_parts[0], user_id, -1) == -1) {
                         perror("Failed to change file ownership");
                         return 1;
@@ -217,24 +226,28 @@ void *connection_handler(void *socket_desc)
                     */
                     
 
-                    // Create a command that moves the file using system()
+                    // Create a command that moves the file
                     char command[256];
                     snprintf(command, sizeof(command), "mv %s %s", message_parts[0], "distribution");
 
                     // Execute the command
                     int result = system(command);
+
+                    // if the command did not execute successfully
                     if (result == -1) {
                         printf("Error executing the command.\n");
+                        // send the error message to the client
                         char response[100];
                         int length;
                         length = snprintf(response, sizeof(response), "Error executing the move command file.\n");
                         write(cs, response, length);
                     }
 
-                    // Check the exit status of the command
+                    // Check the exit status of the command to see if it finished successfully
                     if (WIFEXITED(result) && WEXITSTATUS(result) == 0) 
                     {
                         printf("File moved successfully.\n");
+                        // send the message to the client
                         char response[100];
                         int length;
                         length = snprintf(response, sizeof(response), "%s was transferred to the distribution folder", message_parts[0]);
@@ -243,6 +256,7 @@ void *connection_handler(void *socket_desc)
                     else 
                     {
                         printf("Failed to move the file.\n");
+                        // send the error message to the client
                         char response[100];
                         int length;
                         length = snprintf(response, sizeof(response), "Error moving the %s file.\n", message_parts[0]);
@@ -251,24 +265,28 @@ void *connection_handler(void *socket_desc)
                 }
             }
         }
+        // check if the folder to be transferred to is manufacturing
         else if(strcmp(message_parts[1], "manufacturing") == 0)
         {
             // Check if the file to be moved exists
             if (access(message_parts[0], F_OK) == -1) 
             {
-                perror("File does not exist");
+                perror("File does not exist\n");
+                // send the error message to the client
                 char response[100];
                 int length;
                 length = snprintf(response, sizeof(response), "%s does not exist", message_parts[0]);
                 write(cs, response, length);
             }
+            // if the file does not exist
             else
             {
-                // Get the group entry using group name
+                // Get the user group using group name
                 struct group* group = getgrnam("manufacturing");
 
                 int isMember = 0;
                 
+                // check that the user group exists
                 if(group != NULL) 
                 {
                     // Iterate over group members and check if the username matches
@@ -285,6 +303,7 @@ void *connection_handler(void *socket_desc)
                         member++;
                     }
                     
+                    // if the user is not a member of the user group
                     if(*member == NULL) 
                     {
                         printf("%s is not a member of the manufacturing group.\n", message_parts[2]);
@@ -294,6 +313,7 @@ void *connection_handler(void *socket_desc)
                         write(cs, response, length);
                     }
                 } 
+                // if the user group does not exist
                 else 
                 {
                     printf("Group manufacturing not found.\n");
@@ -303,6 +323,7 @@ void *connection_handler(void *socket_desc)
                     write(cs, response, length);
                 }
 
+                // if the user is a member of the user group
                 if(isMember == 1)
                 {
                     /*
@@ -341,25 +362,29 @@ void *connection_handler(void *socket_desc)
                     */
                     
 
-                    // Create a command that moves the file using system()
+                    // Create a command that moves the file
                     char command[256];
                     snprintf(command, sizeof(command), "mv %s %s", message_parts[0], "manufacturing");
 
                     // Execute the command
                     int result = system(command);
+
+                    // check if the command executed successfully
                     if (result == -1) 
                     {
                         printf("Error executing the command.\n");
+                        // send the error message to the client
                         char response[100];
                         int length;
                         length = snprintf(response, sizeof(response), "Error executing the move command file.\n");
                         write(cs, response, length);
                     }
 
-                    // Check the exit status of the command
+                    // Check the exit status of the command to see if it finished successfully
                     if (WIFEXITED(result) && WEXITSTATUS(result) == 0) 
                     {
                         printf("File moved successfully.\n");
+                        // send the message to the client
                         char response[100];
                         int length;
                         length = snprintf(response, sizeof(response), "%s was transferred to the manufacturing folder", message_parts[0]);
@@ -368,6 +393,7 @@ void *connection_handler(void *socket_desc)
                     else 
                     {
                         printf("Failed to move the file.\n");
+                        // send the error message to the client
                         char response[100];
                         int length;
                         length = snprintf(response, sizeof(response), "Error moving the %s file.\n", message_parts[0]);
@@ -375,6 +401,16 @@ void *connection_handler(void *socket_desc)
                     }
                 }
             }
+        }
+        // the folder does not exist
+        else
+        {
+            printf("Folder does not exist.\n");
+            // send the message to the client
+            char response[100];
+            int length;
+            length = snprintf(response, sizeof(response), "%s folder does not exist\n", message_parts[1]);
+            write(cs, response, length);
         }
     }
 
@@ -386,6 +422,7 @@ void *connection_handler(void *socket_desc)
     else if (READSIZE == -1)
     {
         perror("read error");
+        // send the error message to the client
         char response[100];
         int length;
         length = snprintf(response, sizeof(response), "Read error.\n");

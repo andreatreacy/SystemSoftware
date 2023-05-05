@@ -20,9 +20,9 @@ int main(int argc , char *argv[])
     SID = socket(AF_INET , SOCK_STREAM , 0);
     if (SID == -1)
     {
-        printf("Error creating socket");
+        printf("Error creating socket\n");
     } {
-    	printf("socket created");
+    	printf("socket created\n");
     } 
     
     // set sockaddr_in variables
@@ -34,7 +34,7 @@ int main(int argc , char *argv[])
     //Connect to server
     if (connect(SID , (struct sockaddr *)&server , sizeof(server)) < 0)
     {
-        printf("connect failed. Error");
+        printf("connect failed. Error\n");
         return 1;
     }
      
@@ -64,7 +64,7 @@ int main(int argc , char *argv[])
     //Send some data
     if(send(SID , fullMessage , strlen(fullMessage) , 0) < 0)
     {
-        printf("Send failed");
+        printf("Send failed\n");
         return 1;
     }
 
